@@ -48,22 +48,21 @@ func init() {
 	}
 }
 
-func (e EasyToken) GetToken() string {
+func (e EasyToken) GetToken() (string, error) {
 
 	// Create the Claims
 	claims := &jwt.StandardClaims{
-		ExpiresAt: e.Expires,
+		ExpiresAt: e.Expires, //time.Unix(c.ExpiresAt, 0)
 		Issuer:    e.Username,
 	}
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
-	ss, err := token.SignedString(mySigningKey)
+	tokenString, err := token.SignedString(mySigningKey)
 	if err != nil {
 		log.Fatal(err)
-		ss = "No funciono"
 	}
-	//fmt.Printf("%v %v", ss, err)
-	return ss
+
+	return tokenString, err
 }
 
 func (e EasyToken) ValidateToken(tokenString string) bool {
