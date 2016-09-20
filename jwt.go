@@ -1,35 +1,76 @@
-package jwt_beego
+package jwtbeego
 
 import (
+	"crypto/rsa"
+	"io/ioutil"
+	"log"
+
 	"github.com/dgrijalva/jwt-go"
 )
 
-type EasyToken struct{}
+type EasyToken struct {
+	Username string
+	Expires  int64
+}
+
+// https://gist.github.com/cryptix/45c33ecf0ae54828e63b
+// location of the files used for signing and verification
+const (
+	privKeyPath = "keys/rsakey.pem"     // openssl genrsa -out app.rsa keysize
+	pubKeyPath  = "keys/rsakey.pem.pub" // openssl rsa -in app.rsa -pubout > app.rsa.pub
+)
+
+var (
+	verifyKey    *rsa.PublicKey
+	mySigningKey *rsa.PrivateKey
+)
 
 func init() {
+	verifyBytes, err := ioutil.ReadFile(pubKeyPath)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	verifyKey, err = jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	signBytes, err := ioutil.ReadFile(privKeyPath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mySigningKey, err = jwt.ParseRSAPrivateKeyFromPEM(signBytes)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-func (e *EasyToken) GetToken() string {
-	// Create a new token object, specifying signing method and the claims
-	// you would like it to contain.
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"foo": "bar",
-		"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
-	})
-	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString(hmacSampleSecret)
+func (e EasyToken) GetToken() string {
 
-	//fmt.Println(tokenString, err)
-	return tokenString
+	// Create the Claims
+	claims := &jwt.StandardClaims{
+		ExpiresAt: e.Expires,
+		Issuer:    e.Username,
+	}
+
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
+	ss, err := token.SignedString(mySigningKey)
+	if err != nil {
+		log.Fatal(err)
+		ss = "No funciono"
+	}
+	//fmt.Printf("%v %v", ss, err)
+	return ss
 }
 
-func (e *EasyToken) ValidateToken(tokenString string) bool {
+func (e EasyToken) ValidateToken(tokenString string) bool {
 	// Token from another example.  This token is expired
 	//var tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJleHAiOjE1MDAwLCJpc3MiOiJ0ZXN0In0.HE7fK0xOQwFEr4WDgRWj4teRPZ6i3GLwD5YCm6Pwu_c"
-
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("AllYourBase"), nil
+		return mySigningKey, nil
 	})
 
 	if token.Valid {
