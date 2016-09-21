@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"io/ioutil"
 	"log"
+	"errors"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -65,30 +66,34 @@ func (e EasyToken) GetToken() (string, error) {
 	return tokenString, err
 }
 
-func (e EasyToken) ValidateToken(tokenString string) bool {
+func (e EasyToken) ValidateToken(tokenString string) (bool, error) {
 	// Token from another example.  This token is expired
 	//var tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJleHAiOjE1MDAwLCJpc3MiOiJ0ZXN0In0.HE7fK0xOQwFEr4WDgRWj4teRPZ6i3GLwD5YCm6Pwu_c"
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return mySigningKey, nil
+		return verifyKey, nil
 	})
 
+	if token == nil {
+		log.Fatal(err)
+		return false, errors.New("No funcionó")
+	}
+
 	if token.Valid {
-		//fmt.Println("You look nice today")
-		return true
+		//"You look nice today"
+		return true, nil
 	} else if ve, ok := err.(*jwt.ValidationError); ok {
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-			//fmt.Println("That's not even a token")
-			return false
+			return false, errors.New("That's not even a token")
 		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
 			// Token is either expired or not active yet
-			//fmt.Println("Timing is everything")
-			return false
+			return false, errors.New("Timing is everything")
 		} else {
-			//fmt.Println("Couldn't handle this token:", err)
-			return false
+			//"Couldn't handle this token:"
+			return false, err
 		}
 	} else {
-		//fmt.Println("Couldn't handle this token:", err)
-		return false
+		//"Couldn't handle this token:"
+		return false, err
 	}
 }
