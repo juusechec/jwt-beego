@@ -74,6 +74,74 @@ func (c *TipoCancelacionSemestreController) Prepare() {
 ...
 ```
 
+*) Adicionalmente se puede establecer que para todos los controladores se haga la validación excepto para el de login.
+
+1) Configurar un nuevo paquete.
+
+```go
+//./myBeego/controller.go
+
+//Se crea un espacio de nombres llamado myBeego
+package myBeego
+
+//Se agrega la biblioteca de beego
+import (
+	...
+	"github.com/astaxie/beego"
+)
+
+//Se genera un tipo Controller que hereda de beego.Controller
+type Controller struct {
+	DisableJWT false
+	beego.Controller
+}
+
+//Se redefine lo que hace la función Prepare
+//* es un apuntador al igual que en C
+//& hace referencia a la dirección de memoria
+//La iniciación de una variable o funcion con * se traduce en que almacena
+//u := 10 //var z *int  //z = &u //fmt.Println(z)//0x1040e0f8
+//var s *string //var r **string = &s //fmt.Println(r)//0x1040a120
+func (c *Controller) Prepare() {
+	//Lo que quieras hacer en todos los controladores
+	c.DisableJWT == false {
+		tokenString := c.Ctx.Input.Query("tokenString")
+	
+		et := jwtbeego.EasyToken{}
+		valido, _ := et.ValidateToken(tokenString)
+		if !valido {
+			c.Ctx.Output.SetStatus(401)
+			c.Data["json"] = "Permission Deny"
+			c.ServeJSON()
+		}
+	}
+	return
+}
+
+```
+
+2) Configurar llamado del nuevo Controller en todos los controladores:
+
+```go
+//./controllers/miObjeto.go
+
+package controllers
+
+import (
+	...
+	"github.com/juusechec/oas_be_cancelacion_semestre/myBeego"
+	"github.com/juusechec/jwt-beego"
+)
+
+type MiObjetoController struct {
+	//beego.Controller
+	myBeego.Controller
+	//myBeego.Controller.DisableJWT = DisableJWT //Si desea deshabilitar para este control
+}
+
+...
+```
+
 Se basa en:
 * https://github.com/someone1/gcp-jwt-go
 * https://github.com/dgrijalva/jwt-go
