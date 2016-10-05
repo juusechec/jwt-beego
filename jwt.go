@@ -69,6 +69,9 @@ func (e EasyToken) GetToken() (string, error) {
 func (e EasyToken) ValidateToken(tokenString string) (bool, error) {
 	// Token from another example.  This token is expired
 	//var tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJleHAiOjE1MDAwLCJpc3MiOiJ0ZXN0In0.HE7fK0xOQwFEr4WDgRWj4teRPZ6i3GLwD5YCm6Pwu_c"
+	if tokenString == "" {
+		return false, errors.New("Token vacio")
+	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return verifyKey, nil
