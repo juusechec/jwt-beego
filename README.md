@@ -1,5 +1,7 @@
+[![Build Status](https://travis-ci.org/juusechec/jwt-beego.svg?branch=master)](https://travis-ci.org/juusechec/jwt-beego)
+
 # jwt-beego
-Una implementación simple de dgrijalva/jwt-go para beego. 
+Una implementación simple de dgrijalva/jwt-go para beego.
 
 Pasos para implementar:
 
@@ -13,7 +15,7 @@ package controllers
 
 import (
 	...
-	
+
 	"github.com/juusechec/jwt-beego"
 )
 
@@ -54,7 +56,7 @@ package controllers
 
 import (
 	...
-	
+
 	"github.com/juusechec/jwt-beego"
 )
 
@@ -106,7 +108,7 @@ func (c *Controller) Prepare() {
 	//Lo que quieras hacer en todos los controladores
 	c.DisableJWT == false {
 		tokenString := c.Ctx.Input.Query("tokenString")
-	
+
 		et := jwtbeego.EasyToken{}
 		valido, _ := et.ValidateToken(tokenString)
 		if !valido {
