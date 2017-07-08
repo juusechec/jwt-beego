@@ -11,6 +11,7 @@ var (
 	tokenStringGlobal string
 )
 
+// TestGetToken is the testing function por jwtbeego
 func TestGetToken(t *testing.T) {
 	et := jwtbeego.EasyToken{
 		Username: "username",
@@ -26,6 +27,7 @@ func TestGetToken(t *testing.T) {
 	}
 }
 
+// TestValidateToken is the testing function por jwtbeego
 func TestValidateToken(t *testing.T) {
 	tokenString := tokenStringGlobal //c.Ctx.Input.Query("username")
 
