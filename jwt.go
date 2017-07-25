@@ -61,7 +61,7 @@ func (e EasyToken) GetToken() (string, error) {
 		Issuer:    e.Username,
 	}
 
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256), claims)
 	tokenString, err := token.SignedString(mySigningKey)
 	if err != nil {
 		log.Fatal(err)
@@ -75,7 +75,7 @@ func (e EasyToken) ValidateToken(tokenString string) (bool, error) {
 	// Token from another example.  This token is expired
 	//var tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJleHAiOjE1MDAwLCJpc3MiOiJ0ZXN0In0.HE7fK0xOQwFEr4WDgRWj4teRPZ6i3GLwD5YCm6Pwu_c"
 	if tokenString == "" {
-		return false, errors.New("Token vacio")
+		return false, errors.New("token is empty")
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -84,7 +84,7 @@ func (e EasyToken) ValidateToken(tokenString string) (bool, error) {
 
 	if token == nil {
 		log.Fatal(err)
-		return false, errors.New("No funcionó")
+		return false, errors.New("not work")
 	}
 
 	if token.Valid {
