@@ -83,7 +83,7 @@ func (e EasyToken) ValidateToken(tokenString string) (bool, error) {
 	})
 
 	if token == nil {
-		log.Fatal(err)
+		log.Println(err)
 		return false, errors.New("not work")
 	}
 
