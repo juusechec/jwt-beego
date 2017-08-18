@@ -54,7 +54,7 @@ func (u *UserController) GetToken() {
 3) Agregar la validación del token en cada controlador que se necesite. Esto se hace a través de la función ***Prepare***.
 
 ```go
-// ./controllers/tipo_cancelacion_semestre.go
+// ./controllers/my_restricted_controller.go
 package controllers
 
 import (
@@ -81,7 +81,7 @@ func (c *TipoCancelacionSemestreController) Prepare() {
 ...
 ```
 
-*) Adicionalmente se puede establecer que para todos los controladores se haga la validación excepto para el de login.
+Con esto ya estaría terminado, pero si se quiere hacer que todos los controladores tengan la misma validación se puede hacer:
 
 1) Configurar un nuevo paquete.
 
@@ -111,6 +111,8 @@ type Controller struct {
 func (c *Controller) Prepare() {
 	//Lo que quieras hacer en todos los controladores
 	tokenString := c.Ctx.Input.Query("tokenString")
+	// O puede ser leído de una cabecera HEADER!!
+	// tokenString := c.Ctx.Request.Header.Get("X-JWTtoken")
 
 	et := jwtbeego.EasyToken{}
 	valido, _ := et.ValidateToken(tokenString)
@@ -140,7 +142,6 @@ import (
 type MiObjetoController struct {
 	//beego.Controller
 	myBeego.Controller
-	//myBeego.Controller.DisableJWT = DisableJWT //Si desea deshabilitar para este control
 }
 
 ...
