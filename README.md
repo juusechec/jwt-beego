@@ -3,6 +3,8 @@
 [![GoDoc Reference](https://godoc.org/github.com/juusechec/jwt-beego?status.svg)](http://godoc.org/github.com/juusechec/jwt-beego)
 [![Coverage Status](https://coveralls.io/repos/juusechec/jwt-beego/badge.svg?branch=master)](https://coveralls.io/r/juusechec/jwt-beego?branch=master)
 
+You can read Docs in [english](README-en_US.md).
+
 # jwt-beego
 Una implementación simple de dgrijalva/jwt-go para beego.
 
