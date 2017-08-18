@@ -65,6 +65,8 @@ import (
 
 func (c *TipoCancelacionSemestreController) Prepare() {
 	tokenString := c.Ctx.Input.Query("tokenString")
+	// O puede ser leído de una cabecera HEADER!!
+	// tokenString := c.Ctx.Request.Header.Get("X-JWTtoken")
 
 	et := jwtbeego.EasyToken{}
 	valido, _ := et.ValidateToken(tokenString)
