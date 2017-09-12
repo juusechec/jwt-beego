@@ -32,10 +32,14 @@ func TestValidateToken(t *testing.T) {
 	tokenString := tokenStringGlobal //c.Ctx.Input.Query("username")
 
 	et := jwtbeego.EasyToken{}
-	valido, err := et.ValidateToken(tokenString)
+	valido, issuer, err := et.ValidateToken(tokenString)
 
 	if !valido {
 		t.Errorf(err.Error())
+	}
+
+	if issuer == "" {
+		t.Errorf("no issuer")
 	}
 
 	return
