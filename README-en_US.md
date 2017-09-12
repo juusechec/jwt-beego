@@ -69,7 +69,7 @@ func (c *TipoCancelacionSemestreController) Prepare() {
 	// tokenString := c.Ctx.Request.Header.Get("X-JWTtoken")
 
 	et := jwtbeego.EasyToken{}
-	valido, _ := et.ValidateToken(tokenString)
+	valido, _, _ := et.ValidateToken(tokenString)
 	if !valido {
 		c.Ctx.Output.SetStatus(401)
 		c.Data["json"] = "Permission Deny"
@@ -115,7 +115,7 @@ func (c *Controller) Prepare() {
 	// tokenString := c.Ctx.Request.Header.Get("X-JWTtoken")
 
 	et := jwtbeego.EasyToken{}
-	valido, _ := et.ValidateToken(tokenString)
+	valido, _, _ := et.ValidateToken(tokenString)
 	if !valido {
 		c.Ctx.Output.SetStatus(401)
 		c.Data["json"] = "Permission Deny"
