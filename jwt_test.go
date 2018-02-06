@@ -41,6 +41,4 @@ func TestValidateToken(t *testing.T) {
 	if issuer == "" {
 		t.Errorf("no issuer")
 	}
-
-	return
 }
